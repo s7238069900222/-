@@ -1,1 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>門診用藥決策工具（含健保給付核對）</title>
+  <style>
+    :root{ --bg:#f7f1e3; --card:#fffaf0; --ink:#1f2937; --muted:#6b7280; --line:rgba(31,41,55,.14); --shadow:0 12px 30px rgba(31,41,55,.08); --radius:18px; }
+    body{ margin:0; font-family: system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif; color:var(--ink); background:var(--bg); }
+    header, main{ max-width:1100px; margin:0 auto; padding:18px; }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; }
+    nav a{ display:inline-block; margin-right:10px; padding:8px 10px; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none; }
+    nav a:hover{ opacity:.85; }
+    h1{ margin:0 0 10px; font-size:22px; }
+    .muted{ color:var(--muted); line-height:1.6; }
+    ul{ margin:10px 0 0 18px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>門診用藥決策工具（含健保給付核對）</h1>
+    <div class="muted">多頁工具：高血壓 / 糖尿病 / 高血脂。每頁提供「建議用藥」＋「是否符合健保」兩欄。</div>
+    <nav style="margin-top:12px;">
+      <a href="dm.html">糖尿病 DM</a>
+      <a href="htn.html">高血壓 HTN</a>
+      <a href="lipid.html">高血脂 Lipid</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card">
+      <b>使用方式</b>
+      <ul>
+        <li>點上方分頁進入疾病工具。</li>
+        <li>輸入病人重要共病與實驗數據。</li>
+        <li>工具會輸出：建議用藥 + 健保符合與否 + 需要補齊的條件。</li>
+      </ul>
+      <div class="muted" style="margin-top:10px;">
+        ※ 之後我們會把「共病整合輸入」放在首頁，並自動帶入各分頁。
+      </div>
+    </section>
+  </main>
+</body>
+</html>
 
