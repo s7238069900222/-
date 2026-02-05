@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DM 用藥決策（含健保核對）</title>
+  <title>DM 門診流程（Step-based）＋健保核對</title>
   <style>
     :root{
       --bg:#f7f1e3;
@@ -25,31 +25,19 @@
       color:var(--ink);
       background:var(--bg);
     }
-    header, main{
-      max-width:1200px;
-      margin:0 auto;
-      padding:18px;
-    }
+    header, main{ max-width:1200px; margin:0 auto; padding:18px; }
     header h1{ margin:0 0 6px; font-size:20px; }
     .muted{ color:var(--muted); line-height:1.6; }
     .topbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:10px; }
     .nav a{
-      display:inline-block;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--ink);
-      text-decoration:none;
+      display:inline-block; padding:8px 10px; border-radius:12px;
+      border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none;
     }
     .nav a:hover{ opacity:.86; }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-      margin-top:14px;
-    }
+
+    .grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap:14px; margin-top:14px; }
     @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+
     .card{
       background:var(--card);
       border:1px solid var(--line);
@@ -57,107 +45,97 @@
       box-shadow:var(--shadow);
       padding:16px;
     }
-    .sectionTitle{
-      font-weight:800;
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
-    .formRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-bottom:10px;
-    }
+    .sectionTitle{ font-weight:800; margin:0 0 10px; font-size:14px; letter-spacing:.2px; }
+    .formRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px; }
     @media (max-width: 520px){ .formRow{ grid-template-columns: 1fr; } }
     label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
     input[type="number"], select{
-      width:100%;
-      padding:10px 10px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:white;
-      font-size:14px;
-      outline:none;
+      width:100%; padding:10px 10px; border-radius:12px;
+      border:1px solid var(--line); background:white; font-size:14px; outline:none;
     }
     input[type="checkbox"]{ transform: translateY(1px); }
+
     .checkboxRow{
       display:flex; gap:10px; align-items:flex-start;
-      padding:10px 10px;
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:12px;
-      margin-bottom:10px;
+      padding:10px 10px; border:1px solid var(--line); background:#fff;
+      border-radius:12px; margin-bottom:10px;
     }
     .checkboxRow b{ font-size:13px; }
+
     .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
     .chip{
       display:inline-flex; gap:8px; align-items:center;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:var(--chip);
-      font-size:13px;
+      padding:7px 10px; border-radius:999px;
+      border:1px solid var(--line); background:var(--chip); font-size:13px;
     }
+
     .btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     button{
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:white;
-      cursor:pointer;
-      font-weight:700;
+      padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:white; cursor:pointer; font-weight:700;
     }
     button.primary{ background:#111827; color:white; border-color:#111827; }
     button:hover{ opacity:.92; }
 
     .tableWrap{ overflow:auto; border-radius:16px; border:1px solid var(--line); background:#fff; }
-    table{ width:100%; border-collapse:collapse; min-width:820px; }
-    th, td{
-      border-bottom:1px solid rgba(31,41,55,.08);
-      padding:12px 12px;
-      vertical-align:top;
-      font-size:14px;
-    }
-    th{
-      text-align:left;
-      background:rgba(17,24,39,.04);
-      font-size:13px;
-      color:#111827;
-      position:sticky; top:0;
-    }
+    table{ width:100%; border-collapse:collapse; min-width:860px; }
+    th, td{ border-bottom:1px solid rgba(31,41,55,.08); padding:12px 12px; vertical-align:top; font-size:14px; }
+    th{ text-align:left; background:rgba(17,24,39,.04); font-size:13px; color:#111827; position:sticky; top:0; }
+
     .status{
       display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid var(--line);
+      padding:6px 10px; border-radius:999px; border:1px solid var(--line);
       font-weight:800; font-size:12px; white-space:nowrap;
     }
     .ok{ color:var(--ok); border-color:rgba(10,122,61,.22); background:rgba(10,122,61,.06); }
     .warn{ color:var(--warn); border-color:rgba(180,83,9,.22); background:rgba(180,83,9,.06); }
     .bad{ color:var(--bad); border-color:rgba(185,28,28,.22); background:rgba(185,28,28,.06); }
 
-    details{
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-      padding:10px 12px;
-    }
-    details > summary{ cursor:pointer; font-weight:800; }
     .small{ font-size:12px; color:var(--muted); line-height:1.6; }
     code{ background:rgba(17,24,39,.06); padding:2px 6px; border-radius:8px; }
     hr.sep{ border:none;border-top:1px solid rgba(31,41,55,.10); margin:12px 0; }
+
+    .flowBox{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
+    }
+    .flowStep{
+      border:1px dashed rgba(31,41,55,.22);
+      border-radius:14px;
+      padding:10px 10px;
+      margin:8px 0;
+      background:rgba(247,241,227,.55);
+    }
+    .pill{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(31,41,55,.18);
+      background:#fff;
+      font-size:12px;
+      margin-right:6px;
+      white-space:nowrap;
+    }
+    .inlineHint{
+      margin-top:6px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(31,41,55,.12);
+      background:rgba(17,24,39,.03);
+    }
+    .hidden{ display:none; }
   </style>
 </head>
 
 <body>
 <header>
-  <h1>糖尿病 DM 用藥決策工具（含健保給付核對）</h1>
+  <h1>DM 門診流程版（你的 Step 1→4）＋健保核對</h1>
   <div class="muted">
-    輸入關鍵資訊 → 產出「建議用藥」與「健保/適用性提醒」。<br/>
-    ⚠️ 工具為臨床輔助：健保規定與仿單可能更新，最終以最新公告/仿單與病人狀況為準。
+    門檻固定寫死：Step2（A1c &gt;7 且 ≥3月）、Step3（A1c &gt;7.5 且 ≥6月）、Step4（A1c &gt;8 且 ≥6月）。<br/>
+    Metformin maximum 固定：<b>≥1000 mg/day</b>（你的門診定義）。
   </div>
-
   <div class="topbar">
     <div class="nav">
       <a href="index.html">回首頁</a>
@@ -170,113 +148,39 @@
 <main class="grid">
   <!-- 左：輸入 -->
   <section class="card">
-    <div class="sectionTitle">① 病人狀態（目標 × 共病 × 腎功能）</div>
+    <div class="sectionTitle">① 基本資料（流程判斷用）</div>
 
     <div class="formRow">
       <div>
-        <label>HbA1c（%）</label>
-        <input id="a1c" type="number" min="4" max="20" step="0.1" placeholder="例：8.6">
+        <label>HbA1c（%）（目前/第 X 個月）</label>
+        <input id="a1c" type="number" min="4" max="20" step="0.1" placeholder="例：8.2">
       </div>
       <div>
-        <label>血糖控制目標（你指定）</label>
-        <select id="a1cGoal">
-          <option value="6.5">&lt; 6.5%</option>
-          <option value="7" selected>&lt; 7.0%</option>
-          <option value="8">&lt; 8.0%</option>
-        </select>
-        <div class="small">此目標會影響「是否未達理想控制」與升階建議。</div>
+        <label>本階段已治療多久（月）</label>
+        <input id="monthsOnStage" type="number" min="0" max="60" step="1" placeholder="例：3 或 6">
       </div>
     </div>
 
     <div class="formRow">
       <div>
-        <label>eGFR（mL/min/1.73m²）</label>
-        <input id="egfr" type="number" min="1" max="200" step="1" placeholder="例：62">
+        <label>Metformin 每日總劑量（mg/day）</label>
+        <input id="metDose" type="number" min="0" max="3000" step="250" placeholder="例：1000">
+        <div class="small">你的流程：<b>≥1000 mg/day 視為 Maximum dose</b>。</div>
       </div>
       <div>
-        <label>UACR（mg/g，若未知可留空）</label>
-        <input id="uacr" type="number" min="0" max="5000" step="1" placeholder="例：120">
-      </div>
-    </div>
-
-    <div class="formRow">
-      <div>
-        <label>是否有症狀或明顯高血糖/消耗狀態？</label>
-        <select id="severeHyper">
-          <option value="no" selected>否（一般門診調整）</option>
-          <option value="yes">是（例如明顯症狀/體重下降/非常高血糖）</option>
-        </select>
-      </div>
-      <div>
-        <label>腎臟/心衰適應症線索（可用勾選快速）</label>
-        <select id="ckdRisk">
-          <option value="auto" selected>自動（依 CKD 勾選 + UACR）</option>
-          <option value="yes">我確定有 CKD/蛋白尿風險</option>
-          <option value="no">我確定沒有</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="checkboxRow">
-      <input id="ascvd" type="checkbox">
-      <div>
-        <b>已確立 ASCVD / CAD / 重大心血管事件史</b>
-        <div class="small">例如 MI、PCI/CABG、缺血性中風等（共病優先選藥）。</div>
-      </div>
-    </div>
-
-    <div class="checkboxRow">
-      <input id="hf" type="checkbox">
-      <div>
-        <b>心衰竭（HF）或曾因 HF 住院</b>
-        <div class="small">SGLT2i 常為優先選項之一。</div>
-      </div>
-    </div>
-
-    <div class="checkboxRow">
-      <input id="ckd" type="checkbox">
-      <div>
-        <b>慢性腎臟病（CKD）</b>
-        <div class="small">工具會用 eGFR 與 SGLT2 品項門檻做「適用性」提醒。</div>
-      </div>
-    </div>
-
-    <hr class="sep">
-
-    <div class="sectionTitle">② 目前用藥（健保門檻/先後順序核對）</div>
-    <div class="small">請勾選目前正在使用的類別（不需精確到單一品項）。</div>
-
-    <div class="chips" style="margin-top:10px;">
-      <label class="chip"><input type="checkbox" id="m_met"> Metformin</label>
-      <label class="chip"><input type="checkbox" id="m_su"> Sulfonylurea（SU）</label>
-      <label class="chip"><input type="checkbox" id="m_tzd"> TZD（pioglitazone）</label>
-      <label class="chip"><input type="checkbox" id="m_dpp4"> DPP-4 inhibitor</label>
-      <label class="chip"><input type="checkbox" id="m_sglt2"> SGLT2 inhibitor</label>
-      <label class="chip"><input type="checkbox" id="m_agI"> α-glucosidase inhibitor</label>
-      <label class="chip"><input type="checkbox" id="m_glp1"> GLP-1 RA</label>
-      <label class="chip"><input type="checkbox" id="m_basalins"> Basal insulin</label>
-    </div>
-
-    <div class="formRow" style="margin-top:10px;">
-      <div>
-        <label>目前口服降血糖「成分」數（估算即可）</label>
+        <label>目前口服「成分」數（複方算兩種）</label>
         <input id="oralComponents" type="number" min="0" max="10" step="1" placeholder="例：3">
         <div class="small">健保：口服成分原則 ≤4。</div>
       </div>
-      <div>
-        <label>是否已使用「最大耐受 metformin」仍控制不佳？</label>
-        <select id="maxTolMet">
-          <option value="unknown" selected>不確定 / 未記載</option>
-          <option value="yes">是</option>
-          <option value="no">否</option>
-          <option value="contra">無法用（過敏/禁忌/不耐受）</option>
-        </select>
-      </div>
     </div>
 
     <div class="formRow">
       <div>
-        <label>SGLT2 品項（用於 eGFR 適用性提醒）</label>
+        <label>eGFR（用於 SGLT2 適用性提醒）</label>
+        <input id="egfr" type="number" min="1" max="200" step="1" placeholder="例：42">
+      </div>
+      <div>
+        <label>SGLT2 品項（若未用可不選）</label>
         <select id="sglt2Agent">
           <option value="none" selected>未使用 / 不評估</option>
           <option value="empa">Empagliflozin</option>
@@ -285,36 +189,101 @@
           <option value="ertu">Ertugliflozin</option>
           <option value="combo45">SGLT2+Metformin 複方（多數仿單需 eGFR ≥45）</option>
         </select>
-        <div class="small">提示依台灣指引表格（並提醒仿單可能更新）。</div>
-      </div>
-
-      <div>
-        <label>若要評估 GLP-1 RA 健保：是否已「併用下列之一」≥ 6 個月？</label>
-        <select id="glp1_combo6m">
-          <option value="no" selected>否 / 不確定</option>
-          <option value="sglt2">是：SGLT2i</option>
-          <option value="dpp4">是：DPP-4i</option>
-          <option value="sglt2dpp4">是：SGLT2+DPP4 複方</option>
-          <option value="insulin">是：Insulin（含基礎胰島素）</option>
-        </select>
       </div>
     </div>
 
+    <div class="checkboxRow">
+      <input id="ckd" type="checkbox">
+      <div>
+        <b>CKD/蛋白尿風險</b>
+        <div class="small">你流程：CKD/蛋白尿/HF → Step2 優先 SGLT2。</div>
+      </div>
+    </div>
+
+    <div class="checkboxRow">
+      <input id="hf" type="checkbox">
+      <div>
+        <b>心衰竭（HF）或曾因 HF 住院</b>
+        <div class="small">你流程：CKD/蛋白尿/HF → Step2 優先 SGLT2。</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <div class="sectionTitle">② 目前主力方案（你門診的 Step 選擇）</div>
+
     <div class="formRow">
       <div>
-        <label>若要評估 GLP-1 RA 健保：A1c 門檻</label>
-        <select id="glp1_a1c_gate">
-          <option value="na" selected>不評估 / 不確定</option>
-          <option value="ge85">≥ 8.5%</option>
-          <option value="ge80">≥ 8.0%（特定複方情境）</option>
+        <label>目前主力方案</label>
+        <select id="stage" onchange="syncStageUI()">
+          <option value="s1" selected>Step1：Metformin alone</option>
+          <option value="s2_sglt2">Step2：Metformin + SGLT2i</option>
+          <option value="s2_dpp4">Step2：Metformin + DPP4i</option>
+          <option value="s2_tzd">Step2：Metformin + TZD</option>
+          <option value="s3_fixed">Step3：固定複方（SGLT2i + DPP4i）</option>
+          <option value="s_insulin">（Step4評估可用）Metformin + Insulin</option>
         </select>
       </div>
-      <div>
-        <label>（選填）你預計的「升階速度」</label>
-        <select id="pace">
-          <option value="standard" selected>一般（逐步加藥）</option>
-          <option value="fast">偏快（A1c 明顯超標/高風險）</option>
-        </select>
+      <div id="insulinBox" class="hidden">
+        <label>Insulin 每日總劑量（U/day）</label>
+        <input id="insulinU" type="number" min="0" max="500" step="1" placeholder="例：24">
+        <div class="small">Step4/GLP-1 評估時會自動判斷是否 <b>&lt;60U/day</b>。</div>
+      </div>
+    </div>
+
+    <div class="chips" style="margin-top:8px;">
+      <label class="chip"><input type="checkbox" id="addSU"> 期間加用 SU（可）</label>
+      <label class="chip"><input type="checkbox" id="addAcarb"> 期間加用 Acarbose（可）</label>
+    </div>
+
+    <hr class="sep">
+
+    <div class="sectionTitle">③ GLP-1 模組（可選；需要評估再展開）</div>
+    <div class="btnRow">
+      <button id="toggleGlp1Btn" onclick="toggleGlp1()">展開/收起 GLP-1 評估</button>
+    </div>
+
+    <div id="glp1Panel" style="display:none; margin-top:10px;" class="flowBox">
+      <div class="small" style="margin-bottom:8px;">
+        只有你要判斷「是否可改 GLP-1」時才需要填。若院所沒有此藥，可完全不使用。
+      </div>
+
+      <div class="formRow">
+        <div>
+          <label>是否已併用（當前方案）滿 6 個月？</label>
+          <select id="glp1_6m">
+            <option value="unknown" selected>不確定/未記載</option>
+            <option value="yes">是（≥6 個月）</option>
+            <option value="no">否</option>
+          </select>
+        </div>
+        <div>
+          <label>第六個月 HbA1c 是否仍 &gt; 8.0%？</label>
+          <select id="glp1_a1c8">
+            <option value="unknown" selected>不確定</option>
+            <option value="yes">是（&gt;8.0%）</option>
+            <option value="no">否</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="formRow">
+        <div>
+          <label>你是否會在改 GLP-1 後「停用 DPP-4 / SGLT2」？</label>
+          <select id="glp1_stop_dpp4_sglt2">
+            <option value="unknown" selected>不確定</option>
+            <option value="yes">會停（較符合常見併用限制）</option>
+            <option value="no">不會停（可能不符/需改策略）</option>
+          </select>
+        </div>
+        <div>
+          <label>顯示「GLP-1 健保 + SGLT2 自費」策略提示</label>
+          <select id="glp1_selfpay_hint">
+            <option value="yes" selected>要</option>
+            <option value="no">不要</option>
+          </select>
+          <div class="small">你已選「要」，本工具會以「臨床策略提示」呈現（非健保建議）。</div>
+        </div>
       </div>
     </div>
 
@@ -322,56 +291,55 @@
       <button class="primary" onclick="run()">產生建議</button>
       <button onclick="resetAll()">清除</button>
     </div>
-
-    <details>
-      <summary>健保規則（本頁已套用）</summary>
-      <div class="small">
-        <ul>
-          <li>原則優先 metformin（或早期胰島素）。若過敏/禁忌/不耐受或仍控制不佳，才可使用其他口服藥。</li>
-          <li>TZD / DPP-4 / SGLT2（含其複方）限「最大耐受 metformin 仍不佳」。</li>
-          <li>SGLT2 與 DPP-4（含其複方）宜二擇一。</li>
-          <li>三種口服仍不佳 → 宜考慮胰島素。</li>
-          <li>口服成分最多四種。</li>
-        </ul>
-      </div>
-    </details>
   </section>
 
   <!-- 右：輸出 -->
   <section class="card">
-    <div class="sectionTitle">③ 輸出：建議用藥 × 健保/適用性</div>
+    <div class="sectionTitle">④ 你的流程（Step 1→4，門診版）</div>
+    <div class="flowBox">
+      <div class="flowStep">
+        <span class="pill">Step1</span>
+        Metformin（<b>≥1000 mg/day</b> 視為 maximum）→ 3 個月後若 A1c &gt;7 → Step2
+      </div>
+      <div class="flowStep">
+        <span class="pill">Step2</span>
+        Metformin +（SGLT2i 優先：CKD/蛋白尿/HF）/ DPP4（第二優先）/ TZD
+      </div>
+      <div class="flowStep">
+        <span class="pill">Step3</span>
+        Metformin max +（SGLT2 或 DPP4）≥6 個月，且第 6 個月 A1c &gt;7.5 → 改固定複方（SGLT2+DPP4）
+      </div>
+      <div class="flowStep">
+        <span class="pill">Step4</span>
+        Metformin max 併用（SGLT2 / DPP4 / 固定複方 / insulin <b>&lt;60U/day</b>）≥6 個月且第 6 個月 A1c &gt;8 → 可評估改 GLP-1（可選模組）
+      </div>
+      <div class="small" style="margin-top:8px;">
+        期間可加 SU 或 Acarbose 加強，但口服成分上限 ≤4（複方算兩種）。
+      </div>
+    </div>
 
+    <div class="sectionTitle" style="margin-top:14px;">⑤ 輸出：建議用藥 × 健保/適用性（含替代方案）</div>
     <div id="summary" class="muted" style="margin-bottom:10px;">
-      按「產生建議」後，這裡會顯示重點摘要。
+      按「產生建議」後，這裡會顯示摘要。
     </div>
 
     <div class="tableWrap">
       <table>
         <thead>
           <tr>
-            <th style="width:52%;">建議用藥（臨床/共病導向）</th>
-            <th style="width:48%;">健保/適用性（NHI + eGFR/仿單提醒）</th>
+            <th style="width:52%;">建議用藥（依 Step 流程）＋替代方案</th>
+            <th style="width:48%;">健保/適用性（核對與缺項）</th>
           </tr>
         </thead>
         <tbody id="outRows">
-          <tr>
-            <td class="muted">尚未產生結果</td>
-            <td class="muted">—</td>
-          </tr>
+          <tr><td class="muted">尚未產生結果</td><td class="muted">—</td></tr>
         </tbody>
       </table>
     </div>
 
-    <details style="margin-top:12px;">
-      <summary>說明</summary>
-      <div class="small">
-        <ul>
-          <li><b>健保</b>：主要核對「使用條件/先後順序/成分數」等規範。</li>
-          <li><b>適用性</b>：主要提醒 eGFR 門檻（不同 SGLT2 品項不同），避免開了卻不適用。</li>
-          <li>若你想把「院內最常核刪的申報語句」也做成一鍵複製，我可以再加上。</li>
-        </ul>
-      </div>
-    </details>
+    <div class="inlineHint small">
+      小提醒：本工具把你門診的流程「寫死」。健保條文多用「最大耐受 metformin」「控制不佳」等文字；你若要更像申報語句，我也可以下一版加「一鍵複製病歷句」。
+    </div>
   </section>
 </main>
 
@@ -382,8 +350,8 @@
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
   }
-  function checked(id){ return document.getElementById(id).checked; }
   function sel(id){ return document.getElementById(id).value; }
+  function checked(id){ return document.getElementById(id).checked; }
 
   function badge(type, text){
     const cls = type === "ok" ? "status ok" : type === "warn" ? "status warn" : "status bad";
@@ -404,304 +372,316 @@
     `);
   }
 
-  // eGFR suitability reminders (simplified from TW guideline table; labels may update)
+  function syncStageUI(){
+    const st = sel("stage");
+    const box = document.getElementById("insulinBox");
+    box.classList.toggle("hidden", st !== "s_insulin");
+  }
+  syncStageUI();
+
+  function toggleGlp1(){
+    const p = document.getElementById("glp1Panel");
+    p.style.display = (p.style.display === "none") ? "block" : "none";
+  }
+
+  // SGLT2 eGFR suitability reminders (simplified; label may update)
   function sglt2EgfrAdvice(agent, egfr){
     if(agent === "none") return {level:"ok", title:"未評估 SGLT2 品項", detail:"—"};
     if(egfr === null) return {level:"warn", title:"需輸入 eGFR", detail:"未輸入 eGFR，無法做 SGLT2 適用性提醒。"};
-
     const e = egfr;
 
-    // canagliflozin: >=60 ok, 30-59 100mg, <30 not recommended
     if(agent === "cana"){
       if(e < 30) return {level:"bad", title:"不建議（eGFR <30）", detail:"Canagliflozin：eGFR <30 通常不建議使用/開始。"};
       if(e < 60) return {level:"warn", title:"可用但需注意劑量", detail:"Canagliflozin：eGFR 30–59 常見建議 100 mg/day（依仿單/院內規範）。"};
-      return {level:"ok", title:"可用", detail:"Canagliflozin：eGFR ≥60 通常不需調整劑量。"};
+      return {level:"ok", title:"可用", detail:"Canagliflozin：eGFR ≥60 通常可用。"};
     }
-
-    // dapagliflozin: >=25 ok, <25 not recommended to initiate; may continue if already on
     if(agent === "dapa"){
-      if(e < 25) return {level:"bad", title:"不建議開始（eGFR <25）", detail:"Dapagliflozin：eGFR <25 通常不建議『新開始』；若已使用者是否可續用需依仿單/臨床判斷。"};
-      return {level:"ok", title:"可用", detail:"Dapagliflozin：eGFR ≥25 通常可使用（依仿單）。"};
+      if(e < 25) return {level:"bad", title:"不建議開始（eGFR <25）", detail:"Dapagliflozin：eGFR <25 通常不建議新開始；是否續用依仿單/臨床判斷。"};
+      return {level:"ok", title:"可用", detail:"Dapagliflozin：eGFR ≥25 通常可用（依仿單）。"};
     }
-
-    // empagliflozin: >=30 ok, <30 not recommended
     if(agent === "empa"){
       if(e < 30) return {level:"bad", title:"不建議（eGFR <30）", detail:"Empagliflozin：eGFR <30 通常不建議使用/開始（依仿單）。"};
-      return {level:"ok", title:"可用", detail:"Empagliflozin：eGFR ≥30 通常不需調整劑量。"};
+      return {level:"ok", title:"可用", detail:"Empagliflozin：eGFR ≥30 通常可用（依仿單）。"};
     }
-
-    // ertugliflozin: >=45 ok; <45 not recommended; 30-45 may continue if stable (note)
     if(agent === "ertu"){
       if(e < 30) return {level:"bad", title:"不建議（eGFR <30）", detail:"Ertugliflozin：eGFR <30 通常不建議使用。"};
-      if(e < 45) return {level:"warn", title:"一般不建議開始（eGFR 30–44）", detail:"Ertugliflozin：eGFR <45 多數情況不建議開始；若已使用且穩定，是否續用需依仿單/臨床判斷。"};
-      return {level:"ok", title:"可用", detail:"Ertugliflozin：eGFR ≥45 通常可使用。"};
+      if(e < 45) return {level:"warn", title:"一般不建議開始（eGFR 30–44）", detail:"Ertugliflozin：eGFR <45 多數情況不建議開始；是否續用依仿單/臨床判斷。"};
+      return {level:"ok", title:"可用", detail:"Ertugliflozin：eGFR ≥45 通常可用。"};
     }
-
-    // combo (SGLT2+metformin): many labels require >=45
     if(agent === "combo45"){
-      if(e < 45) return {level:"bad", title:"複方多不適用（eGFR <45）", detail:"SGLT2+Metformin 複方：多數仿單建議需 eGFR ≥45 才可使用。"};
+      if(e < 45) return {level:"bad", title:"複方多不適用（eGFR <45）", detail:"SGLT2+Metformin 複方：多數仿單建議需 eGFR ≥45。"};
       return {level:"ok", title:"複方可考慮", detail:"SGLT2+Metformin 複方：eGFR ≥45 多數情況可用（仍以仿單為準）。"};
     }
-
-    return {level:"warn", title:"未知品項", detail:"請選擇 SGLT2 品項以套用 eGFR 提醒。"};
+    return {level:"warn", title:"未知品項", detail:"請選擇 SGLT2 品項。"};
   }
 
   function run(){
     const a1c = valNum("a1c");
-    const goal = Number(sel("a1cGoal"));
-    const egfr = valNum("egfr");
-    const uacr = valNum("uacr");
-    const severe = sel("severeHyper") === "yes";
-    const pace = sel("pace");
-
-    const ascvd = checked("ascvd");
-    const hf = checked("hf");
-    const ckdChecked = checked("ckd");
-    const ckdRiskMode = sel("ckdRisk");
-
-    const m_met = checked("m_met");
-    const m_tzd = checked("m_tzd");
-    const m_dpp4 = checked("m_dpp4");
-    const m_sglt2 = checked("m_sglt2");
-    const m_glp1 = checked("m_glp1");
-
+    const months = valNum("monthsOnStage");
+    const metDose = valNum("metDose");
     const oralComponents = valNum("oralComponents");
-    const maxTolMet = sel("maxTolMet");
+    const egfr = valNum("egfr");
     const sglt2Agent = sel("sglt2Agent");
+    const stage = sel("stage");
+    const insulinU = valNum("insulinU");
 
-    const glp1_combo6m = sel("glp1_combo6m");
-    const glp1_gate = sel("glp1_a1c_gate");
+    const ckd = checked("ckd");
+    const hf = checked("hf");
+    const addSU = checked("addSU");
+    const addAcarb = checked("addAcarb");
 
-    // Determine "not at goal"
-    const notAtGoal = (a1c !== null) ? (a1c >= goal) : null;
+    const glp1PanelOpen = (document.getElementById("glp1Panel").style.display !== "none");
+    const glp1_6m = sel("glp1_6m");
+    const glp1_a1c8 = sel("glp1_a1c8");
+    const glp1_stop = sel("glp1_stop_dpp4_sglt2");
+    const glp1_selfpay = sel("glp1_selfpay_hint");
 
-    // Determine CKD/proteinuria risk signal
-    let ckdSignal = false;
-    if(ckdRiskMode === "yes") ckdSignal = true;
-    else if(ckdRiskMode === "no") ckdSignal = false;
-    else {
-      // auto
-      ckdSignal = ckdChecked || (uacr !== null && uacr >= 30);
-    }
+    // Your fixed clinic rules:
+    const metMaxClinic = (metDose !== null && metDose >= 1000);
+    const step2Trigger = (a1c !== null && months !== null && months >= 3 && a1c > 7.0);
+    const step3Trigger = (a1c !== null && months !== null && months >= 6 && a1c > 7.5);
+    const step4Trigger = (a1c !== null && months !== null && months >= 6 && a1c > 8.0);
 
-    // summary
-    const summaryBits = [];
-    if(a1c !== null) summaryBits.push(`HbA1c：<b>${a1c.toFixed(1)}%</b>`);
-    summaryBits.push(`目標：<b>&lt;${goal.toFixed(1)}%</b>`);
-    if(egfr !== null) summaryBits.push(`eGFR：<b>${egfr.toFixed(0)}</b>`);
-    if(uacr !== null) summaryBits.push(`UACR：<b>${uacr.toFixed(0)}</b>`);
-    if(ascvd) summaryBits.push(`<b>ASCVD/CAD</b>`);
-    if(hf) summaryBits.push(`<b>HF</b>`);
-    if(ckdSignal) summaryBits.push(`<b>CKD/蛋白尿風險</b>`);
-    if(severe) summaryBits.push(`<b>嚴重高血糖/消耗狀態疑慮</b>`);
-    document.getElementById("summary").innerHTML =
-      summaryBits.length ? summaryBits.join(" · ") : "（尚未輸入摘要資料）";
+    // Insulin <60 check (for Step4 module logic)
+    const insulinLt60 = (insulinU !== null && insulinU > 0 && insulinU < 60);
+
+    // Summary
+    const bits = [];
+    if(a1c !== null) bits.push(`HbA1c：<b>${a1c.toFixed(1)}%</b>`);
+    if(months !== null) bits.push(`本階段：<b>${months.toFixed(0)}月</b>`);
+    if(metDose !== null) bits.push(`Metformin：<b>${metDose.toFixed(0)} mg/day</b>`);
+    if(egfr !== null) bits.push(`eGFR：<b>${egfr.toFixed(0)}</b>`);
+    if(stage === "s_insulin" && insulinU !== null) bits.push(`Insulin：<b>${insulinU.toFixed(0)} U/day</b>`);
+    if(ckd) bits.push(`<b>CKD/蛋白尿</b>`);
+    if(hf) bits.push(`<b>HF</b>`);
+    if(addSU) bits.push(`<b>+SU</b>`);
+    if(addAcarb) bits.push(`<b>+Acarbose</b>`);
+    document.getElementById("summary").innerHTML = bits.length ? bits.join(" · ") : "（尚未輸入摘要資料）";
 
     const rows = [];
 
-    // 0) goal check
-    if(a1c === null){
-      addRow(rows,
-        `<b>先做一件事：</b>請輸入 HbA1c，工具才能判斷是否達標與升階節奏。`,
-        "warn", "⚠️ 無法判定",
-        `未輸入 HbA1c → 無法用你選的目標（&lt;${goal.toFixed(1)}%）判斷「是否控制不佳」。`
-      );
+    // Core input checks
+    if(a1c === null) addRow(rows, `<b>缺 HbA1c</b>`, "warn", "⚠️ 缺資料", `請輸入 HbA1c 才能跑 Step 觸發條件。`);
+    if(months === null) addRow(rows, `<b>缺本階段月數</b>`, "warn", "⚠️ 缺資料", `你的流程依 3/6 個月判斷。`);
+    if(metDose === null) addRow(rows, `<b>缺 metformin 劑量</b>`, "warn", "⚠️ 缺資料", `你的流程以 ≥1000 mg/day 當 maximum。`);
+
+    // Oral components
+    if(oralComponents === null){
+      addRow(rows, `<b>口服成分數未填</b>`, "warn", "⚠️ 無法判定", `健保原則：口服成分 ≤4（複方算兩種）。`);
+    } else if(oralComponents > 4){
+      addRow(rows, `<b>口服成分數=${oralComponents}</b>（>4）`, "bad", "❌ 可能不符", `建議先精簡口服或改注射策略，以免踩到口服成分上限。`);
     } else {
-      addRow(rows,
-        `<b>血糖目標判讀：</b>HbA1c ${a1c.toFixed(1)}% vs 目標 &lt;${goal.toFixed(1)}%`,
-        notAtGoal ? "warn" : "ok",
-        notAtGoal ? "⚠️ 未達標" : "✅ 達標/接近達標",
-        notAtGoal
-          ? `建議依共病與低血糖風險選擇加藥；若超標幅度大或有症狀，升階可更快。`
-          : `若已有低血糖或副作用，可考慮簡化/調整；仍需依共病做心腎保護藥物配置。`
+      addRow(rows, `<b>口服成分數=${oralComponents}</b>（≤4）`, "ok", "✅ OK", `符合口服成分上限原則。`);
+    }
+
+    // Met max per your rule
+    if(metDose !== null){
+      addRow(
+        rows,
+        `<b>Metformin maximum（你的門診定義）</b>：${metDose} mg/day → ${metMaxClinic ? "達到" : "未達到"}`,
+        metMaxClinic ? "ok" : "warn",
+        metMaxClinic ? "✅ 達到" : "⚠️ 未達到",
+        `你固定採用：≥1000 mg/day 視為 maximum。若未達，通常先補足/調整耐受性再往下走。`
       );
     }
 
-    // 1) oral components <= 4
-    if(oralComponents !== null){
-      if(oralComponents > 4){
-        addRow(rows,
-          `<b>處方結構檢查：</b>口服成分數為 ${oralComponents}（>4）→ 建議先精簡口服或改注射策略。`,
-          "bad", "❌ 不符合（口服成分>4）",
-          `健保：口服降血糖藥物成分原則最多四種（含四種）。`
+    // Helper: alternatives text
+    function alternativesForStep2(){
+      const prefer = (ckd || hf) ? "優先：SGLT2i（CKD/蛋白尿/HF）" : "第二優先：DPP-4i；或 TZD";
+      const alt = (ckd || hf)
+        ? "替代方案：若 eGFR/不耐受使 SGLT2 不適用 → 改 DPP-4i（或 TZD 視情況）"
+        : "替代方案：若擔心體重/水腫/心衰風險 → 優先 DPP-4i；若需強效但可接受副作用 → 考慮 TZD / 加 SU / Acarbose（注意成分上限）";
+      return {prefer, alt};
+    }
+
+    // SGLT2 suitability + alternative if not suitable
+    let sglt2Suit = null;
+    if(stage === "s2_sglt2" || sglt2Agent !== "none"){
+      sglt2Suit = sglt2EgfrAdvice(sglt2Agent, egfr);
+      addRow(
+        rows,
+        `<b>SGLT2 eGFR 適用性</b><br/>你選的品項：<code>${escapeHtml(document.getElementById("sglt2Agent").selectedOptions[0].text)}</code>`,
+        sglt2Suit.level,
+        sglt2Suit.level === "ok" ? "✅ 可用/可考慮" : sglt2Suit.level === "warn" ? "⚠️ 注意" : "❌ 不適用",
+        `${escapeHtml(sglt2Suit.title)}<br/>${escapeHtml(sglt2Suit.detail)}`
+      );
+    }
+
+    // Step-based recommendations
+    if(stage === "s1"){
+      const left = `<b>目前：Step1（Metformin alone）</b><br/>
+      觸發條件：已用 ≥3月 且 HbA1c &gt;7 → 進 Step2 加一個主力。<br/>
+      <div class="small" style="margin-top:8px;">
+        <b>替代方案：</b>若還沒達 3 月/或 A1c ≤7 → 維持並加強生活型態；必要時可先加 SU/Acarbose（注意成分上限）。
+      </div>`;
+
+      if(step2Trigger){
+        const {prefer, alt} = alternativesForStep2();
+        addRow(
+          rows,
+          left,
+          metMaxClinic ? "ok" : "warn",
+          metMaxClinic ? "✅ 建議進 Step2" : "⚠️ 可進 Step2 但先把 metformin 拉到 1000",
+          `已達 Step2 觸發（≥3月 且 A1c &gt;7）。<br/>
+          <b>建議：</b>${escapeHtml(prefer)}<br/>
+          <b>替代方案：</b>${escapeHtml(alt)}<br/>
+          健保提醒：多數條文用語為「最大耐受 metformin 後仍控制不佳」。`
         );
       } else {
-        addRow(rows,
-          `<b>處方結構檢查：</b>口服成分數為 ${oralComponents}（≤4）`,
-          "ok", "✅ OK",
-          `符合「口服成分 ≤4」原則。`
-        );
-      }
-    } else {
-      addRow(rows,
-        `<b>處方結構檢查：</b>請填「口服成分數」，才能核對 ≤4 規則。`,
-        "warn", "⚠️ 無法判定",
-        `未輸入口服成分數 → 無法自動核對。`
-      );
-    }
-
-    // 2) SGLT2 vs DPP4 one-of-two
-    if(m_sglt2 && m_dpp4){
-      addRow(rows,
-        `<b>目前用藥組合：</b>SGLT2i 與 DPP-4i 同時使用（含複方情境請再確認）。`,
-        "bad", "❌ 不建議/可能不符",
-        `健保規則：SGLT2 與 DPP-4 及其複方「宜二擇一」。建議擇一保留。`
-      );
-    } else {
-      addRow(rows,
-        `<b>目前用藥組合：</b>SGLT2i 與 DPP-4i 未同時使用`,
-        "ok", "✅ OK",
-        `符合「二擇一」方向。`
-      );
-    }
-
-    // 3) metformin gate for TZD/DPP4/SGLT2 (NHI)
-    const usesRestricted = (m_tzd || m_dpp4 || m_sglt2);
-    if(usesRestricted){
-      if(maxTolMet === "yes"){
-        addRow(rows,
-          `<b>健保門檻：</b>你目前/考慮使用 TZD / DPP-4 / SGLT2（或複方）。`,
-          "ok", "✅ 符合（基本門檻）",
-          `你已選「最大耐受 metformin 仍控制不佳」→ 符合這三類（含複方）之基本門檻。`
-        );
-      } else if(maxTolMet === "contra"){
-        addRow(rows,
-          `<b>健保門檻：</b>你目前/考慮使用 TZD / DPP-4 / SGLT2（或複方）。`,
-          "warn", "⚠️ 需病歷佐證",
-          `若 metformin 過敏/禁忌/不耐受，可改用其他口服藥，但建議病歷清楚記載原因以降低核刪風險。`
-        );
-      } else if(maxTolMet === "no"){
-        addRow(rows,
-          `<b>健保門檻：</b>你目前/考慮使用 TZD / DPP-4 / SGLT2（或複方）。`,
-          "bad", "❌ 可能不符合",
-          `健保：上述三類（含複方）限「最大耐受 metformin 仍無法理想控制」。你目前選「否」。`
-        );
-      } else {
-        addRow(rows,
-          `<b>健保門檻：</b>你目前/考慮使用 TZD / DPP-4 / SGLT2（或複方）。`,
-          "warn", "⚠️ 無法判定",
-          `請確認是否「最大耐受 metformin 仍不佳」或屬禁忌/不耐受。`
-        );
+        addRow(rows, left, "ok", "✅ 尚未觸發", `尚未符合 Step2 觸發（需 ≥3月 且 A1c &gt;7）。`);
       }
     }
 
-    // 4) SGLT2: eGFR suitability reminder + indication + sequencing
-    if(m_sglt2 || sglt2Agent !== "none"){
-      const adv = sglt2EgfrAdvice(sglt2Agent, egfr);
+    if(stage === "s2_sglt2" || stage === "s2_dpp4" || stage === "s2_tzd"){
+      const now = stage === "s2_sglt2" ? "Metformin + SGLT2i"
+                : stage === "s2_dpp4" ? "Metformin + DPP-4i"
+                : "Metformin + TZD";
 
-      // Indication priority
-      const ind = [];
-      if(hf) ind.push("HF：SGLT2 常為優先（降低 HF 住院風險導向）");
-      if(ckdSignal) ind.push("CKD/蛋白尿：SGLT2 常為優先（腎臟保護導向）");
-      if(ascvd && !hf && !ckdSignal) ind.push("ASCVD：可考慮 SGLT2 或 GLP-1RA（依體重/低血糖/可近性）");
-      if(!hf && !ckdSignal && !ascvd) ind.push("一般情境：若未達標，可依體重/低血糖風險/偏好選擇是否加入 SGLT2");
+      const left2 = `<b>目前：Step2（${now}）</b><br/>
+      觸發 Step3：Metformin max +（SGLT2 或 DPP4）≥6月 且 第6個月 A1c &gt;7.5 → Step3 固定複方（SGLT2+DPP4）。<br/>
+      <div class="small" style="margin-top:8px;">
+        <b>替代方案：</b>若尚未滿 6 月或 A1c ≤7.5 → 維持並優化（可加 SU/Acarbose 但注意成分≤4）；若 SGLT2 不適用 → 改走 DPP4/TZD。
+      </div>`;
 
-      const left = `
-        <b>SGLT2 建議與先後順序：</b><br/>
-        ${ind.map(x=>`• ${escapeHtml(x)}`).join("<br/>")}
-        <div class="small" style="margin-top:8px;">
-          你選的品項：<code>${escapeHtml(document.getElementById("sglt2Agent").selectedOptions[0].text)}</code>
-        </div>
-      `;
+      if(step3Trigger){
+        // If stage is Step2 but user is currently on TZD, step3 rule in your flow was met + (SGLT2 or DPP4).
+        const step3Eligible = (stage === "s2_sglt2" || stage === "s2_dpp4");
+        if(!step3Eligible){
+          addRow(
+            rows,
+            left2,
+            "warn",
+            "⚠️ 你目前是 TZD，與你 Step3 前提不一致",
+            `你貼的流程 Step3 前提是「Metformin max +（SGLT2 或 DPP4）≥6月」。<br/>
+            <b>替代方案：</b>若目前走 TZD 且控制不佳，可先轉回你 Step2 的主路徑（SGLT2 或 DPP4），再按 6 月規則評估固定複方。`
+          );
+        } else {
+          // Provide step3 suggestion; warn about DPP4+SGLT2 "二擇一" gray area
+          addRow(
+            rows,
+            left2,
+            metMaxClinic ? "warn" : "warn",
+            "⚠️ 觸發 Step3（門診流程）",
+            `已達 Step3 觸發（≥6月 且 A1c &gt;7.5）。<br/>
+            <b>建議（你的流程）：</b>改固定複方（SGLT2 + DPP4）。<br/>
+            <b>替代方案：</b>若擔心固定複方在你院所申報風險 → 先維持單一主力（SGLT2 或 DPP4）並加 SU/Acarbose（注意成分≤4）或考慮注射策略。<br/>
+            <b>健保/申報提醒：</b>有規則會提到 SGLT2 與 DPP-4「宜二擇一」，固定複方屬灰區，建議你依院內實務留足「最大耐受 metformin 仍不佳」與追蹤紀錄。`
+          );
+        }
+      } else {
+        addRow(rows, left2, "ok", "✅ 尚未觸發 Step3", `尚未達 Step3 觸發（需 ≥6月 且 A1c &gt;7.5）。`);
+      }
 
-      const right = `
-        <b>適用性（eGFR/仿單提醒）：</b>${escapeHtml(adv.title)}<br/>
-        ${escapeHtml(adv.detail)}<br/><br/>
-        <b>健保門檻提醒：</b>若屬 SGLT2（含複方），通常需「最大耐受 metformin 仍不佳」，且與 DPP-4 宜二擇一。
-      `;
+      // Step4 trigger prompt (GLP-1)
+      const left4 = `<b>Step4（可選 GLP-1 模組）</b><br/>
+      觸發：Metformin max 併用（SGLT2/DPP4/固定複方/insulin &lt;60U/day）≥6月 且 A1c &gt;8 → 可評估 GLP-1。<br/>
+      <div class="small" style="margin-top:8px;">
+        <b>替代方案：</b>若院所無 GLP-1 → 走注射胰島素強化或調整既有口服（注意成分≤4）。
+      </div>`;
+      addRow(rows, left4, step4Trigger ? "warn" : "ok", step4Trigger ? "⚠️ 可評估" : "✅ 尚未觸發", step4Trigger ? `你目前符合 Step4 觸發（依你流程）。若要判斷是否可改 GLP-1，請展開 GLP-1 模組填寫。` : `未達 Step4 觸發（需 ≥6月 且 A1c &gt;8）。`);
+    }
 
-      addRow(rows,
-        left,
-        adv.level,
-        adv.level === "ok" ? "✅ 可用/可考慮" : adv.level === "warn" ? "⚠️ 注意/可能不建議開始" : "❌ 不適用",
-        right
+    if(stage === "s3_fixed"){
+      const left = `<b>目前：Step3 固定複方（SGLT2 + DPP4）</b><br/>
+      觸發 Step4：併用 ≥6月 且 第6個月 A1c &gt;8 → 可評估改 GLP-1（可選模組）。<br/>
+      <div class="small" style="margin-top:8px;">
+        <b>替代方案：</b>若 GLP-1 不可得 → 考慮注射胰島素策略；或回到單一主力（SGLT2 或 DPP4）搭配 SU/Acarbose（注意成分≤4）。
+      </div>`;
+      addRow(rows, left, "warn", "⚠️ 注意申報灰區", `固定複方可能落在「二擇一」規則的灰區；建議依院內實務與病歷記載決定。`);
+      addRow(rows, `<b>Step4（可選 GLP-1 模組）</b>`, step4Trigger ? "warn" : "ok", step4Trigger ? "⚠️ 可評估" : "✅ 尚未觸發", step4Trigger ? `你目前符合 Step4 觸發（依你流程），可展開 GLP-1 模組。` : `未達 Step4 觸發。`);
+    }
+
+    if(stage === "s_insulin"){
+      const left = `<b>目前：Metformin + Insulin</b><br/>
+      Step4/GLP-1 路徑會用「Insulin &lt;60U/day」作為其中一個條件。<br/>
+      <div class="small" style="margin-top:8px;">
+        <b>替代方案：</b>若 insulin ≥60U/day，通常代表已較強化治療；可先優化胰島素策略/依血糖型態調整，並評估是否還有口服藥可簡化。
+      </div>`;
+
+      if(insulinU === null){
+        addRow(rows, left, "warn", "⚠️ 缺資料", `請輸入 Insulin U/day 才能判斷是否符合「<60」條件。`);
+      } else {
+        addRow(
+          rows,
+          left,
+          insulinLt60 ? "ok" : "warn",
+          insulinLt60 ? "✅ <60U/day" : "⚠️ ≥60U/day",
+          insulinLt60
+            ? `Insulin <60U/day，符合你 Step4 的其中一個路徑條件（仍需 ≥6月 且 A1c >8）。`
+            : `Insulin ≥60U/day，可能不符合你 Step4 的「<60」路徑；但仍可依臨床與院內規範決策。`
+        );
+      }
+
+      const left4 = `<b>Step4（可選 GLP-1 模組）</b><br/>觸發：≥6月 且 A1c &gt;8，且若走 insulin 路徑通常需 insulin &lt;60U/day。`;
+      addRow(rows, left4, (step4Trigger && insulinLt60) ? "warn" : "ok", (step4Trigger && insulinLt60) ? "⚠️ 可評估" : "✅ 尚未滿足完整條件",
+        (step4Trigger && insulinLt60)
+        ? `你目前符合（≥6月、A1c &gt;8、insulin &lt;60）→ 可展開 GLP-1 模組做健保/併用檢核。`
+        : `若要走此路徑，需要同時滿足：≥6月、A1c &gt;8、insulin &lt;60U/day。`
       );
     }
 
-    // 5) Severe hyperglycemia suggestion
-    if(severe){
-      addRow(rows,
-        `<b>若有消耗狀態/症狀性高血糖：</b>通常需要更快升階（常見包含 <b>胰島素</b> 或注射策略），並縮短回診。`,
-        "warn", "⚠️ 需臨床判斷",
-        `此情境不建議僅緩慢加口服藥；先把症狀與高血糖控制住，再視情況簡化。`
-      );
-    }
-
-    // 6) "3 oral still not controlled" -> consider insulin
-    if(oralComponents !== null && oralComponents >= 3 && a1c !== null && a1c >= goal){
-      addRow(rows,
-        `<b>升階建議：</b>若已使用 ≥3 種口服仍未達你設定目標，可考慮 <b>加入胰島素（多為基礎胰島素）</b> 或改注射策略。`,
-        "ok", "✅ 建議方向",
-        `健保條文用語為「宜考慮胰島素治療」；仍需結合病人風險/偏好與實際血糖型態。`
-      );
-    }
-
-    // 7) GLP-1 RA NHI check (kept MVP)
-    if(m_glp1){
-      let ok = true;
+    // GLP-1 module evaluation (optional)
+    if(glp1PanelOpen){
       const missing = [];
-      if(!(maxTolMet === "yes" || maxTolMet === "contra")){
-        ok = false; missing.push("需確認是否已用最大耐受 metformin（或屬禁忌/不耐受）");
-      }
-      if(glp1_combo6m === "no"){
-        ok = false; missing.push("需確認是否已併用指定藥物 ≥6 個月");
-      }
-      if(a1c === null){
-        ok = false; missing.push("未輸入 HbA1c");
-      } else {
-        if(glp1_gate === "ge85" && a1c < 8.5){ ok = false; missing.push("A1c 未達 ≥8.5%"); }
-        if(glp1_gate === "ge80" && a1c < 8.0){ ok = false; missing.push("A1c 未達 ≥8.0%"); }
-        if(glp1_gate === "na"){ ok = false; missing.push("未選擇 A1c 門檻（≥8.5% 或 ≥8.0% 情境）"); }
-      }
-      if(m_dpp4 || m_sglt2){
-        ok = false; missing.push("GLP-1RA 不得與 DPP-4/SGLT2 併用（需擇一/調整）");
+      let ok = true;
+
+      if(glp1_6m !== "yes"){ ok = false; missing.push("需確認是否已併用滿 6 個月"); }
+      if(glp1_a1c8 !== "yes"){ ok = false; missing.push("需確認第六個月 HbA1c 是否仍 >8.0%"); }
+      if(glp1_stop !== "yes"){ ok = false; missing.push("若改 GLP-1，通常需停用 DPP-4 / SGLT2（否則可能不符/需改策略）"); }
+
+      // insulin path check: if current stage is insulin, ensure <60
+      if(stage === "s_insulin"){
+        if(insulinU === null){ ok = false; missing.push("Insulin U/day 未填（需判斷是否 <60）"); }
+        else if(!insulinLt60){ ok = false; missing.push("Insulin ≥60U/day（不符合你 Step4 的 insulin 路徑條件）"); }
       }
 
       if(ok){
-        addRow(rows,
-          `<b>GLP-1RA（已勾選使用）</b>：第一版健保條件核對通過。`,
-          "ok", "✅ 符合（第一版）",
-          `已滿足：metformin 門檻＋指定併用滿 6 個月＋A1c 門檻，且未與 DPP-4/SGLT2 併用。`
+        const hint = (glp1_selfpay === "yes")
+          ? `<br/><br/><b>臨床策略提示（非健保建議）：</b>若你希望保留心腎保護效果且病人可接受，可考慮「GLP-1 走健保、SGLT2 自費」之組合策略（請明確告知費用、併用風險/利益與追蹤計畫）。`
+          : ``;
+
+        addRow(
+          rows,
+          `<b>GLP-1 評估（你已展開填寫）</b>：符合你 Step4 的進入條件（第一版）。<br/>
+           <div class="small" style="margin-top:8px;"><b>替代方案：</b>若 GLP-1 不可得或病人不接受 → 改走胰島素強化/調整，或回到單一主力 + 加強口服（注意成分≤4）。</div>`,
+          "ok",
+          "✅ 可進一步評估",
+          `你勾選/填寫已符合：≥6月、A1c >8、且併用策略可避免與 DPP-4/SGLT2 同時使用。${hint}`
         );
       } else {
-        addRow(rows,
-          `<b>GLP-1RA（已勾選使用）</b>：健保條件可能未滿足或資料不足。`,
-          "warn", "⚠️ 需補資料/調整",
+        addRow(
+          rows,
+          `<b>GLP-1 評估（你已展開）</b>：目前資料不足或條件未滿足。`,
+          "warn",
+          "⚠️ 需補資料/調整",
           `缺項/衝突：<ul style="margin:6px 0 0 18px;">${missing.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`
         );
       }
+    } else {
+      addRow(rows, `<b>GLP-1 模組</b>：目前收起（未評估）`, "ok", "✅ 略過", `需要評估時再展開即可。`);
     }
 
-    // Render
     document.getElementById("outRows").innerHTML = rows.join("");
   }
 
   function resetAll(){
-    const ids = [
-      "a1c","a1cGoal","egfr","uacr","oralComponents",
-      "severeHyper","ckdRisk","pace",
-      "maxTolMet","sglt2Agent","glp1_combo6m","glp1_a1c_gate",
-      "ascvd","hf","ckd",
-      "m_met","m_su","m_tzd","m_dpp4","m_sglt2","m_agI","m_glp1","m_basalins"
-    ];
+    const ids = ["a1c","monthsOnStage","metDose","oralComponents","egfr","sglt2Agent","stage","insulinU",
+                 "ckd","hf","addSU","addAcarb",
+                 "glp1_6m","glp1_a1c8","glp1_stop_dpp4_sglt2","glp1_selfpay_hint"];
     for(const id of ids){
       const el = document.getElementById(id);
       if(!el) continue;
       if(el.type === "checkbox") el.checked = false;
       else if(el.tagName === "SELECT"){
-        // set sensible defaults
-        if(id === "a1cGoal") el.value = "7";
-        else if(id === "ckdRisk") el.value = "auto";
-        else if(id === "severeHyper") el.value = "no";
-        else if(id === "pace") el.value = "standard";
+        if(id === "stage") el.value = "s1";
+        else if(id === "glp1_selfpay_hint") el.value = "yes";
         else el.selectedIndex = 0;
-      }
-      else el.value = "";
+      } else el.value = "";
     }
-    document.getElementById("summary").innerHTML = "按「產生建議」後，這裡會顯示重點摘要。";
-    document.getElementById("outRows").innerHTML = `
-      <tr><td class="muted">尚未產生結果</td><td class="muted">—</td></tr>
-    `;
+    document.getElementById("glp1Panel").style.display = "none";
+    syncStageUI();
+    document.getElementById("summary").innerHTML = "按「產生建議」後，這裡會顯示摘要。";
+    document.getElementById("outRows").innerHTML = `<tr><td class="muted">尚未產生結果</td><td class="muted">—</td></tr>`;
   }
 </script>
 </body>
