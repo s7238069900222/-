@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -6,7 +7,7 @@
   <title>DM 門診流程（Step-based）＋健保核對</title>
   <style>
     :root{
-      --bg:#f7f1e3;
+      --bg:#f7f1e3;          /* 淺米色底 */
       --card:#fffaf0;
       --ink:#1f2937;
       --muted:#6b7280;
@@ -78,7 +79,7 @@
     button:hover{ opacity:.92; }
 
     .tableWrap{ overflow:auto; border-radius:16px; border:1px solid var(--line); background:#fff; }
-    table{ width:100%; border-collapse:collapse; min-width:860px; }
+    table{ width:100%; border-collapse:collapse; min-width:900px; }
     th, td{ border-bottom:1px solid rgba(31,41,55,.08); padding:12px 12px; vertical-align:top; font-size:14px; }
     th{ text-align:left; background:rgba(17,24,39,.04); font-size:13px; color:#111827; position:sticky; top:0; }
 
@@ -119,7 +120,7 @@
       white-space:nowrap;
     }
     .inlineHint{
-      margin-top:6px;
+      margin-top:10px;
       padding:10px 12px;
       border-radius:14px;
       border:1px solid rgba(31,41,55,.12);
@@ -133,8 +134,8 @@
 <header>
   <h1>DM 門診流程版（你的 Step 1→4）＋健保核對</h1>
   <div class="muted">
-    門檻固定寫死：Step2（A1c &gt;7 且 ≥3月）、Step3（A1c &gt;7.5 且 ≥6月）、Step4（A1c &gt;8 且 ≥6月）。<br/>
-    Metformin maximum 固定：<b>≥1000 mg/day</b>（你的門診定義）。
+    門檻固定：Step2（A1c &gt;7 且 ≥3月）、Step3（A1c &gt;7.5 且 ≥6月）、Step4（A1c &gt;8 且 ≥6月）。<br/>
+    Metformin maximum 固定：<b>≥1000 mg/day</b>（你的門診定義）＋會同時提醒 <b>eGFR 限制</b>。
   </div>
   <div class="topbar">
     <div class="nav">
@@ -163,22 +164,17 @@
 
     <div class="formRow">
       <div>
-        <label>Metformin 每日總劑量（mg/day）</label>
-        <input id="metDose" type="number" min="0" max="3000" step="250" placeholder="例：1000">
-        <div class="small">你的流程：<b>≥1000 mg/day 視為 Maximum dose</b>。</div>
+        <label>eGFR（用於 Metformin / SGLT2 適用性提醒）</label>
+        <input id="egfr" type="number" min="1" max="200" step="1" placeholder="例：42">
       </div>
       <div>
-        <label>目前口服「成分」數（複方算兩種）</label>
-        <input id="oralComponents" type="number" min="0" max="10" step="1" placeholder="例：3">
-        <div class="small">健保：口服成分原則 ≤4。</div>
+        <label>Metformin 每日總劑量（mg/day）</label>
+        <input id="metDose" type="number" min="0" max="3000" step="250" placeholder="例：1000">
+        <div class="small">你的流程：<b>≥1000 mg/day</b> 視為 maximum（仍會顯示 eGFR 限制提醒）。</div>
       </div>
     </div>
 
     <div class="formRow">
-      <div>
-        <label>eGFR（用於 SGLT2 適用性提醒）</label>
-        <input id="egfr" type="number" min="1" max="200" step="1" placeholder="例：42">
-      </div>
       <div>
         <label>SGLT2 品項（若未用可不選）</label>
         <select id="sglt2Agent">
@@ -189,6 +185,11 @@
           <option value="ertu">Ertugliflozin</option>
           <option value="combo45">SGLT2+Metformin 複方（多數仿單需 eGFR ≥45）</option>
         </select>
+      </div>
+      <div>
+        <label>目前口服「成分」數（複方算兩種）</label>
+        <input id="oralComponents" type="number" min="0" max="10" step="1" placeholder="例：3">
+        <div class="small">健保：口服成分原則 ≤4。</div>
       </div>
     </div>
 
@@ -210,7 +211,7 @@
 
     <hr class="sep">
 
-    <div class="sectionTitle">② 目前主力方案（你門診的 Step 選擇）</div>
+    <div class="sectionTitle">② 目前主力方案（你門診的「目前用藥」）</div>
 
     <div class="formRow">
       <div>
@@ -220,14 +221,15 @@
           <option value="s2_sglt2">Step2：Metformin + SGLT2i</option>
           <option value="s2_dpp4">Step2：Metformin + DPP4i</option>
           <option value="s2_tzd">Step2：Metformin + TZD</option>
-          <option value="s3_fixed">Step3：固定複方（SGLT2i + DPP4i）</option>
+          <option value="s_combo">目前用藥：Metformin +（SGLT2i + DPP4i 固定複方）</option>
           <option value="s_insulin">（Step4評估可用）Metformin + Insulin</option>
         </select>
+        <div class="small">你說多數情境是：<b>Metformin +（SGLT2/DPP4 複方）</b>，此選項已按此假設設計。</div>
       </div>
       <div id="insulinBox" class="hidden">
         <label>Insulin 每日總劑量（U/day）</label>
         <input id="insulinU" type="number" min="0" max="500" step="1" placeholder="例：24">
-        <div class="small">Step4/GLP-1 評估時會自動判斷是否 <b>&lt;60U/day</b>。</div>
+        <div class="small">Step4/GLP-1 評估時自動判斷是否 <b>&lt;60U/day</b>。</div>
       </div>
     </div>
 
@@ -282,7 +284,6 @@
             <option value="yes" selected>要</option>
             <option value="no">不要</option>
           </select>
-          <div class="small">你已選「要」，本工具會以「臨床策略提示」呈現（非健保建議）。</div>
         </div>
       </div>
     </div>
@@ -338,7 +339,8 @@
     </div>
 
     <div class="inlineHint small">
-      小提醒：本工具把你門診的流程「寫死」。健保條文多用「最大耐受 metformin」「控制不佳」等文字；你若要更像申報語句，我也可以下一版加「一鍵複製病歷句」。
+      你現在這版已加入：<b>Metformin eGFR 限制提醒</b>（與你固定 1000mg maximum 的門診流程一起顯示）。
+      若你想，我可以再加「一鍵複製病歷句」。
     </div>
   </section>
 </main>
@@ -384,7 +386,34 @@
     p.style.display = (p.style.display === "none") ? "block" : "none";
   }
 
-  // SGLT2 eGFR suitability reminders (simplified; label may update)
+  // Metformin kidney reminders (simplified)
+  // Common practice summary:
+  // - eGFR <30: avoid / stop
+  // - eGFR 30–44: generally avoid initiating; if continuing, reduce dose (often ≤1000 mg/day) + monitor
+  // - eGFR ≥45: generally ok
+  function metforminEgfrAdvice(egfr, metDose){
+    if(egfr === null){
+      return {level:"warn", title:"需輸入 eGFR", detail:"未輸入 eGFR，無法判斷 metformin 的腎功能限制。"};
+    }
+    const e = egfr;
+    if(e < 30){
+      return {
+        level:"bad",
+        title:"eGFR <30：不建議使用/需停用",
+        detail:"一般建議 eGFR <30 避免或停用 metformin（乳酸中毒風險）。"
+      };
+    }
+    if(e < 45){
+      let doseMsg = "eGFR 30–44：多數情況不建議新開始；若已在用，常見作法是降劑量（例如 ≤1000 mg/day）並加密監測。";
+      if(metDose !== null && metDose > 1000){
+        doseMsg += "（目前劑量 >1000：建議評估下修）";
+      }
+      return {level:"warn", title:"eGFR 30–44：需慎用/考慮降劑量", detail:doseMsg};
+    }
+    return {level:"ok", title:"eGFR ≥45：通常可用", detail:"eGFR ≥45 多數情況可安全使用（仍需定期追蹤腎功能）。"};
+  }
+
+  // SGLT2 eGFR suitability reminders (simplified)
   function sglt2EgfrAdvice(agent, egfr){
     if(agent === "none") return {level:"ok", title:"未評估 SGLT2 品項", detail:"—"};
     if(egfr === null) return {level:"warn", title:"需輸入 eGFR", detail:"未輸入 eGFR，無法做 SGLT2 適用性提醒。"};
@@ -418,9 +447,9 @@
   function run(){
     const a1c = valNum("a1c");
     const months = valNum("monthsOnStage");
+    const egfr = valNum("egfr");
     const metDose = valNum("metDose");
     const oralComponents = valNum("oralComponents");
-    const egfr = valNum("egfr");
     const sglt2Agent = sel("sglt2Agent");
     const stage = sel("stage");
     const insulinU = valNum("insulinU");
@@ -436,21 +465,21 @@
     const glp1_stop = sel("glp1_stop_dpp4_sglt2");
     const glp1_selfpay = sel("glp1_selfpay_hint");
 
-    // Your fixed clinic rules:
+    // Your fixed clinic rules
     const metMaxClinic = (metDose !== null && metDose >= 1000);
     const step2Trigger = (a1c !== null && months !== null && months >= 3 && a1c > 7.0);
     const step3Trigger = (a1c !== null && months !== null && months >= 6 && a1c > 7.5);
     const step4Trigger = (a1c !== null && months !== null && months >= 6 && a1c > 8.0);
 
-    // Insulin <60 check (for Step4 module logic)
+    // Insulin <60
     const insulinLt60 = (insulinU !== null && insulinU > 0 && insulinU < 60);
 
     // Summary
     const bits = [];
     if(a1c !== null) bits.push(`HbA1c：<b>${a1c.toFixed(1)}%</b>`);
     if(months !== null) bits.push(`本階段：<b>${months.toFixed(0)}月</b>`);
-    if(metDose !== null) bits.push(`Metformin：<b>${metDose.toFixed(0)} mg/day</b>`);
     if(egfr !== null) bits.push(`eGFR：<b>${egfr.toFixed(0)}</b>`);
+    if(metDose !== null) bits.push(`Metformin：<b>${metDose.toFixed(0)} mg/day</b>`);
     if(stage === "s_insulin" && insulinU !== null) bits.push(`Insulin：<b>${insulinU.toFixed(0)} U/day</b>`);
     if(ckd) bits.push(`<b>CKD/蛋白尿</b>`);
     if(hf) bits.push(`<b>HF</b>`);
@@ -460,10 +489,11 @@
 
     const rows = [];
 
-    // Core input checks
+    // Missing basics
     if(a1c === null) addRow(rows, `<b>缺 HbA1c</b>`, "warn", "⚠️ 缺資料", `請輸入 HbA1c 才能跑 Step 觸發條件。`);
     if(months === null) addRow(rows, `<b>缺本階段月數</b>`, "warn", "⚠️ 缺資料", `你的流程依 3/6 個月判斷。`);
-    if(metDose === null) addRow(rows, `<b>缺 metformin 劑量</b>`, "warn", "⚠️ 缺資料", `你的流程以 ≥1000 mg/day 當 maximum。`);
+    if(metDose === null) addRow(rows, `<b>缺 metformin 劑量</b>`, "warn", "⚠️ 缺資料", `你的流程以 ≥1000 mg/day 當 maximum（但也要看 eGFR 限制）。`);
+    if(egfr === null) addRow(rows, `<b>缺 eGFR</b>`, "warn", "⚠️ 缺資料", `你要求要提醒 metformin / SGLT2 的腎功能限制，請輸入 eGFR。`);
 
     // Oral components
     if(oralComponents === null){
@@ -474,40 +504,60 @@
       addRow(rows, `<b>口服成分數=${oralComponents}</b>（≤4）`, "ok", "✅ OK", `符合口服成分上限原則。`);
     }
 
-    // Met max per your rule
+    // Metformin eGFR reminder
+    const metEgfr = metforminEgfrAdvice(egfr, metDose);
+    addRow(
+      rows,
+      `<b>Metformin 腎功能限制提醒</b>`,
+      metEgfr.level,
+      metEgfr.level === "ok" ? "✅ OK" : metEgfr.level === "warn" ? "⚠️ 注意" : "❌ 不適用",
+      `${escapeHtml(metEgfr.title)}<br/>${escapeHtml(metEgfr.detail)}`
+    );
+
+    // Metformin max per your rule (but annotate if eGFR restricts)
     if(metDose !== null){
+      let statusType = metMaxClinic ? "ok" : "warn";
+      let statusText = metMaxClinic ? "✅ 達到（門診定義）" : "⚠️ 未達到（門診定義）";
+      let detail = `你的流程固定：≥1000 mg/day 視為 maximum。`;
+
+      if(egfr !== null && egfr < 45){
+        statusType = (egfr < 30) ? "bad" : "warn";
+        statusText = (egfr < 30) ? "❌ 受 eGFR 限制" : "⚠️ 受 eGFR 限制";
+        detail += `<br/>但目前 eGFR <45，metformin 劑量/是否可用需依腎功能調整（上方已提示）。`;
+      }
       addRow(
         rows,
         `<b>Metformin maximum（你的門診定義）</b>：${metDose} mg/day → ${metMaxClinic ? "達到" : "未達到"}`,
-        metMaxClinic ? "ok" : "warn",
-        metMaxClinic ? "✅ 達到" : "⚠️ 未達到",
-        `你固定採用：≥1000 mg/day 視為 maximum。若未達，通常先補足/調整耐受性再往下走。`
+        statusType,
+        statusText,
+        detail
       );
     }
 
-    // Helper: alternatives text
+    // SGLT2 eGFR reminder if selected
+    if(sglt2Agent !== "none"){
+      const sAdv = sglt2EgfrAdvice(sglt2Agent, egfr);
+      addRow(
+        rows,
+        `<b>SGLT2 eGFR 適用性</b><br/>你選的品項：<code>${escapeHtml(document.getElementById("sglt2Agent").selectedOptions[0].text)}</code>`,
+        sAdv.level,
+        sAdv.level === "ok" ? "✅ 可用/可考慮" : sAdv.level === "warn" ? "⚠️ 注意" : "❌ 不適用",
+        `${escapeHtml(sAdv.title)}<br/>${escapeHtml(sAdv.detail)}`
+      );
+    } else {
+      addRow(rows, `<b>SGLT2 eGFR 適用性</b>`, "ok", "✅ 未評估", `未選擇 SGLT2 品項（如需心腎導向可再選）。`);
+    }
+
+    // Alternatives helper
     function alternativesForStep2(){
       const prefer = (ckd || hf) ? "優先：SGLT2i（CKD/蛋白尿/HF）" : "第二優先：DPP-4i；或 TZD";
       const alt = (ckd || hf)
         ? "替代方案：若 eGFR/不耐受使 SGLT2 不適用 → 改 DPP-4i（或 TZD 視情況）"
-        : "替代方案：若擔心體重/水腫/心衰風險 → 優先 DPP-4i；若需強效但可接受副作用 → 考慮 TZD / 加 SU / Acarbose（注意成分上限）";
+        : "替代方案：若擔心體重/水腫/心衰風險 → 優先 DPP-4i；若需強效但可接受副作用 → 考慮 TZD / 加 SU / Acarbose（注意成分≤4）";
       return {prefer, alt};
     }
 
-    // SGLT2 suitability + alternative if not suitable
-    let sglt2Suit = null;
-    if(stage === "s2_sglt2" || sglt2Agent !== "none"){
-      sglt2Suit = sglt2EgfrAdvice(sglt2Agent, egfr);
-      addRow(
-        rows,
-        `<b>SGLT2 eGFR 適用性</b><br/>你選的品項：<code>${escapeHtml(document.getElementById("sglt2Agent").selectedOptions[0].text)}</code>`,
-        sglt2Suit.level,
-        sglt2Suit.level === "ok" ? "✅ 可用/可考慮" : sglt2Suit.level === "warn" ? "⚠️ 注意" : "❌ 不適用",
-        `${escapeHtml(sglt2Suit.title)}<br/>${escapeHtml(sglt2Suit.detail)}`
-      );
-    }
-
-    // Step-based recommendations
+    // STEP OUTPUTS
     if(stage === "s1"){
       const left = `<b>目前：Step1（Metformin alone）</b><br/>
       觸發條件：已用 ≥3月 且 HbA1c &gt;7 → 進 Step2 加一個主力。<br/>
@@ -517,16 +567,20 @@
 
       if(step2Trigger){
         const {prefer, alt} = alternativesForStep2();
-        addRow(
-          rows,
-          left,
-          metMaxClinic ? "ok" : "warn",
-          metMaxClinic ? "✅ 建議進 Step2" : "⚠️ 可進 Step2 但先把 metformin 拉到 1000",
-          `已達 Step2 觸發（≥3月 且 A1c &gt;7）。<br/>
+        let statusType = metMaxClinic ? "ok" : "warn";
+        let statusText = metMaxClinic ? "✅ 建議進 Step2" : "⚠️ 可進 Step2 但先把 metformin 拉到 1000";
+        let detail = `已達 Step2 觸發（≥3月 且 A1c &gt;7）。<br/>
           <b>建議：</b>${escapeHtml(prefer)}<br/>
           <b>替代方案：</b>${escapeHtml(alt)}<br/>
-          健保提醒：多數條文用語為「最大耐受 metformin 後仍控制不佳」。`
-        );
+          健保提醒：多數條文用語為「最大耐受 metformin 後仍控制不佳」。`;
+
+        if(egfr !== null && egfr < 30){
+          statusType = "bad";
+          statusText = "❌ eGFR <30：metformin 受限";
+          detail += `<br/><br/><b>重要：</b>你雖觸發升階，但 metformin 在 eGFR <30 通常不建議使用/需停用，請先依腎功能調整基礎治療。`;
+        }
+
+        addRow(rows, left, statusType, statusText, detail);
       } else {
         addRow(rows, left, "ok", "✅ 尚未觸發", `尚未符合 Step2 觸發（需 ≥3月 且 A1c &gt;7）。`);
       }
@@ -544,35 +598,31 @@
       </div>`;
 
       if(step3Trigger){
-        // If stage is Step2 but user is currently on TZD, step3 rule in your flow was met + (SGLT2 or DPP4).
         const step3Eligible = (stage === "s2_sglt2" || stage === "s2_dpp4");
         if(!step3Eligible){
           addRow(
             rows,
             left2,
             "warn",
-            "⚠️ 你目前是 TZD，與你 Step3 前提不一致",
+            "⚠️ 你目前是 TZD，與 Step3 前提不一致",
             `你貼的流程 Step3 前提是「Metformin max +（SGLT2 或 DPP4）≥6月」。<br/>
             <b>替代方案：</b>若目前走 TZD 且控制不佳，可先轉回你 Step2 的主路徑（SGLT2 或 DPP4），再按 6 月規則評估固定複方。`
           );
         } else {
-          // Provide step3 suggestion; warn about DPP4+SGLT2 "二擇一" gray area
           addRow(
             rows,
             left2,
-            metMaxClinic ? "warn" : "warn",
+            "warn",
             "⚠️ 觸發 Step3（門診流程）",
             `已達 Step3 觸發（≥6月 且 A1c &gt;7.5）。<br/>
             <b>建議（你的流程）：</b>改固定複方（SGLT2 + DPP4）。<br/>
-            <b>替代方案：</b>若擔心固定複方在你院所申報風險 → 先維持單一主力（SGLT2 或 DPP4）並加 SU/Acarbose（注意成分≤4）或考慮注射策略。<br/>
-            <b>健保/申報提醒：</b>有規則會提到 SGLT2 與 DPP-4「宜二擇一」，固定複方屬灰區，建議你依院內實務留足「最大耐受 metformin 仍不佳」與追蹤紀錄。`
+            <b>替代方案：</b>若院所申報/實務不想走固定複方 → 維持單一主力（SGLT2 或 DPP4）並加 SU/Acarbose（注意成分≤4）或考慮注射策略。`
           );
         }
       } else {
         addRow(rows, left2, "ok", "✅ 尚未觸發 Step3", `尚未達 Step3 觸發（需 ≥6月 且 A1c &gt;7.5）。`);
       }
 
-      // Step4 trigger prompt (GLP-1)
       const left4 = `<b>Step4（可選 GLP-1 模組）</b><br/>
       觸發：Metformin max 併用（SGLT2/DPP4/固定複方/insulin &lt;60U/day）≥6月 且 A1c &gt;8 → 可評估 GLP-1。<br/>
       <div class="small" style="margin-top:8px;">
@@ -581,14 +631,36 @@
       addRow(rows, left4, step4Trigger ? "warn" : "ok", step4Trigger ? "⚠️ 可評估" : "✅ 尚未觸發", step4Trigger ? `你目前符合 Step4 觸發（依你流程）。若要判斷是否可改 GLP-1，請展開 GLP-1 模組填寫。` : `未達 Step4 觸發（需 ≥6月 且 A1c &gt;8）。`);
     }
 
-    if(stage === "s3_fixed"){
-      const left = `<b>目前：Step3 固定複方（SGLT2 + DPP4）</b><br/>
+    if(stage === "s_combo"){
+      // Your common scenario: Metformin + (SGLT2+DPP4 fixed combo)
+      const left = `<b>目前：Metformin + 固定複方（SGLT2 + DPP4）</b><br/>
+      （本工具對此選項的預設：<b>多數情境一定有併用 Metformin</b>）<br/>
       觸發 Step4：併用 ≥6月 且 第6個月 A1c &gt;8 → 可評估改 GLP-1（可選模組）。<br/>
       <div class="small" style="margin-top:8px;">
         <b>替代方案：</b>若 GLP-1 不可得 → 考慮注射胰島素策略；或回到單一主力（SGLT2 或 DPP4）搭配 SU/Acarbose（注意成分≤4）。
       </div>`;
-      addRow(rows, left, "warn", "⚠️ 注意申報灰區", `固定複方可能落在「二擇一」規則的灰區；建議依院內實務與病歷記載決定。`);
-      addRow(rows, `<b>Step4（可選 GLP-1 模組）</b>`, step4Trigger ? "warn" : "ok", step4Trigger ? "⚠️ 可評估" : "✅ 尚未觸發", step4Trigger ? `你目前符合 Step4 觸發（依你流程），可展開 GLP-1 模組。` : `未達 Step4 觸發。`);
+
+      // Reinforce metformin entry + kidney limits
+      if(metDose === null){
+        addRow(rows, `<b>目前選擇：Metformin + 固定複方</b>`, "warn", "⚠️ 缺資料",
+          "你選了「Metformin + 固定複方」，但尚未填 Metformin 劑量。請填入（你的流程定義 maximum：≥1000 mg/day；且要注意 eGFR 限制）。"
+        );
+      } else if(metDose < 1000){
+        addRow(rows, `<b>目前選擇：Metformin + 固定複方</b>`, "warn", "⚠️ Metformin 未達 1000",
+          "你門診流程把 ≥1000 mg/day 視為 maximum。若病人耐受且 eGFR 允許，建議先把 Metformin 拉到 1000 再判斷是否升階/改注射策略。"
+        );
+      }
+      if(egfr !== null && egfr < 30){
+        addRow(rows, left, "bad", "❌ metformin 受限（eGFR <30）",
+          "你目前流程是以 Metformin 為基底，但 eGFR <30 時 metformin 通常不建議使用/需停用。請先依腎功能調整基礎治療，再走後續路徑。"
+        );
+      } else {
+        addRow(rows, left, step4Trigger ? "warn" : "ok", step4Trigger ? "⚠️ 可評估 Step4" : "✅ 尚未觸發 Step4",
+          step4Trigger
+          ? "你目前符合 Step4 觸發（≥6月 且 A1c >8）。若要評估 GLP-1，請展開 GLP-1 模組。"
+          : "未達 Step4 觸發（需 ≥6月 且 A1c >8）。"
+        );
+      }
     }
 
     if(stage === "s_insulin"){
@@ -613,10 +685,14 @@
       }
 
       const left4 = `<b>Step4（可選 GLP-1 模組）</b><br/>觸發：≥6月 且 A1c &gt;8，且若走 insulin 路徑通常需 insulin &lt;60U/day。`;
-      addRow(rows, left4, (step4Trigger && insulinLt60) ? "warn" : "ok", (step4Trigger && insulinLt60) ? "⚠️ 可評估" : "✅ 尚未滿足完整條件",
+      addRow(
+        rows,
+        left4,
+        (step4Trigger && insulinLt60) ? "warn" : "ok",
+        (step4Trigger && insulinLt60) ? "⚠️ 可評估" : "✅ 尚未滿足完整條件",
         (step4Trigger && insulinLt60)
-        ? `你目前符合（≥6月、A1c &gt;8、insulin &lt;60）→ 可展開 GLP-1 模組做健保/併用檢核。`
-        : `若要走此路徑，需要同時滿足：≥6月、A1c &gt;8、insulin &lt;60U/day。`
+          ? `你目前符合（≥6月、A1c &gt;8、insulin &lt;60）→ 可展開 GLP-1 模組做檢核。`
+          : `若要走此路徑，需要同時滿足：≥6月、A1c &gt;8、insulin &lt;60U/day。`
       );
     }
 
@@ -629,7 +705,6 @@
       if(glp1_a1c8 !== "yes"){ ok = false; missing.push("需確認第六個月 HbA1c 是否仍 >8.0%"); }
       if(glp1_stop !== "yes"){ ok = false; missing.push("若改 GLP-1，通常需停用 DPP-4 / SGLT2（否則可能不符/需改策略）"); }
 
-      // insulin path check: if current stage is insulin, ensure <60
       if(stage === "s_insulin"){
         if(insulinU === null){ ok = false; missing.push("Insulin U/day 未填（需判斷是否 <60）"); }
         else if(!insulinLt60){ ok = false; missing.push("Insulin ≥60U/day（不符合你 Step4 的 insulin 路徑條件）"); }
@@ -646,7 +721,7 @@
            <div class="small" style="margin-top:8px;"><b>替代方案：</b>若 GLP-1 不可得或病人不接受 → 改走胰島素強化/調整，或回到單一主力 + 加強口服（注意成分≤4）。</div>`,
           "ok",
           "✅ 可進一步評估",
-          `你勾選/填寫已符合：≥6月、A1c >8、且併用策略可避免與 DPP-4/SGLT2 同時使用。${hint}`
+          `你填寫已符合：≥6月、A1c &gt;8、且併用策略可避免與 DPP-4/SGLT2 同時使用。${hint}`
         );
       } else {
         addRow(
@@ -665,7 +740,7 @@
   }
 
   function resetAll(){
-    const ids = ["a1c","monthsOnStage","metDose","oralComponents","egfr","sglt2Agent","stage","insulinU",
+    const ids = ["a1c","monthsOnStage","egfr","metDose","oralComponents","sglt2Agent","stage","insulinU",
                  "ckd","hf","addSU","addAcarb",
                  "glp1_6m","glp1_a1c8","glp1_stop_dpp4_sglt2","glp1_selfpay_hint"];
     for(const id of ids){
